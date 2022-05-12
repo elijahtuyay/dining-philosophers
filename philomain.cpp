@@ -13,16 +13,16 @@ int main(){
   const int count = 5;
   
   auto eat = [](chopsticks &left, chopsticks &right, int id){
-    unique_lock<mutex> llock(left_chopstics.mu);
-    unique_lock<mutex> rlock(right_chopstics.mu);
+    unique_lock<mutex> llock(left.mu);
+    unique_lock<mutex> rlock(right.mu);
     
-    cout << "Philosopher " << philosopher_number << " is eating" << endl;
+    cout << "Philosopher " << id << " is eating" << endl;
     
     chrono::milliseconds timeout(1500);
     this_thread::sleep_for(timeout);
     
-    cout << "Philosopher " << philosopher_number << " has finished eating" << endl;
-  }
+    cout << "Philosopher " << id << " has finished eating" << endl;
+  };
 
 
 }
