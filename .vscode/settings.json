@@ -6,6 +6,7 @@
     "algorithm": "cpp",
     "ostream": "cpp",
     "chrono": "cpp",
-    "mutex": "cpp"
+    "mutex": "cpp",
+    "vector": "cpp"
   }
 }

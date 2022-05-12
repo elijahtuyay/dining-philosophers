@@ -28,7 +28,7 @@ void eatfunc(chopsticks &left, chopsticks &right, check &eaters, int id){
     //cout << "Philosopher " << id << " is eating" << endl;
     //}
     eaters.eating[id]=1;
-    chrono::milliseconds timeout(500);
+    chrono::milliseconds timeout(100);
     this_thread::sleep_for(timeout);
     //if(GetAsyncKeyState(VK_RETURN)==1){
     //cout << "Philosopher " << id << " has finished eating" << endl;
@@ -42,7 +42,6 @@ void eatfunc(chopsticks &left, chopsticks &right, check &eaters, int id){
 
 int main(){
   const int count = 5;
-  //int hungry=0;
   array<int,5> rngsus={0,1,2,3,4};
   unsigned rngseed = chrono::system_clock::now().time_since_epoch().count();
   check eaters;
@@ -51,30 +50,11 @@ int main(){
     eaters.eating[i]=0;
   }
 
-  /*
-  auto eat = [](chopsticks &left, chopsticks &right, check &eaters, int id){
-    //cout<<"thread "<<id<<" active\n";
-    unique_lock<mutex> llock(left.mu);
-    unique_lock<mutex> rlock(right.mu);
-    //if(GetAsyncKeyState(VK_RETURN)==1){
-    //cout << "Philosopher " << id << " is eating" << endl;
-    //}
-    eaters.eating[id]=1;
-    chrono::milliseconds timeout(500);
-    this_thread::sleep_for(timeout);
-    //if(GetAsyncKeyState(VK_RETURN)==1){
-    //cout << "Philosopher " << id << " has finished eating" << endl;
-    //}
-    //eaters.eating[id]=0;
-
-    llock.unlock();
-    rlock.unlock();
-  };
-  */
   //creates the chopsticks
   chopsticks sticks[count];
   
   std::thread phil[count];
+  cout<<"press enter to display results\n";
   //shuffle(rngsus.begin(),rngsus.end(),default_random_engine(rngseed));
   while(true)
   { 
@@ -94,7 +74,10 @@ int main(){
       
     }
     
+    //press enter to show whos eating
+    
     if(GetAsyncKeyState(VK_RETURN)==1){
+        system("CLS");
         //int agg=0;
         for(int i=0;i<5;i++){
           //agg+=eaters.eating[i];
@@ -106,7 +89,7 @@ int main(){
           }
         }
         
-        cout<<"Eating: \n";
+        cout<<"\nEating: \n";
         for(int i=0;i<eat.size();i++){
           cout<<"Philosopher "<<eat[i]<<"\n";
         }
@@ -114,6 +97,7 @@ int main(){
         for(int i=0;i<wait.size();i++){
           cout<<"Philosopher "<<wait[i]<<"\n";
         }
+        cout<<"\npress enter to display results\n\n";
       }
     
     for(auto &philosopher: phil) 
