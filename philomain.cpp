@@ -6,6 +6,8 @@
 #include <chrono>
 #include <random>
 #include <numeric>
+#include <windows.h>
+#include <vector>
 
 using namespace std;
 
@@ -13,27 +15,62 @@ struct chopsticks{
   mutex mu;
 };
 
+struct check{
+  int eating[5];
+};
+
+
+void eatfunc(chopsticks &left, chopsticks &right, check &eaters, int id){
+  //cout<<"thread "<<id<<" active\n";
+    unique_lock<mutex> llock(left.mu);
+    unique_lock<mutex> rlock(right.mu);
+    //if(GetAsyncKeyState(VK_RETURN)==1){
+    //cout << "Philosopher " << id << " is eating" << endl;
+    //}
+    eaters.eating[id]=1;
+    chrono::milliseconds timeout(500);
+    this_thread::sleep_for(timeout);
+    //if(GetAsyncKeyState(VK_RETURN)==1){
+    //cout << "Philosopher " << id << " has finished eating" << endl;
+    //}
+    //eaters.eating[id]=0;
+
+    llock.unlock();
+    rlock.unlock();
+    eaters.eating[id]=0;
+}
 
 int main(){
   const int count = 5;
   //int hungry=0;
   array<int,5> rngsus={0,1,2,3,4};
   unsigned rngseed = chrono::system_clock::now().time_since_epoch().count();
+  check eaters;
+  
+  for(int i=0;i<5;i++){
+    eaters.eating[i]=0;
+  }
 
-  auto eat = [](chopsticks &left, chopsticks &right, int id){
+  /*
+  auto eat = [](chopsticks &left, chopsticks &right, check &eaters, int id){
     //cout<<"thread "<<id<<" active\n";
     unique_lock<mutex> llock(left.mu);
     unique_lock<mutex> rlock(right.mu);
-    cout << "Philosopher " << id << " is eating" << endl;
-    
+    //if(GetAsyncKeyState(VK_RETURN)==1){
+    //cout << "Philosopher " << id << " is eating" << endl;
+    //}
+    eaters.eating[id]=1;
     chrono::milliseconds timeout(500);
     this_thread::sleep_for(timeout);
-    
-    cout << "Philosopher " << id << " has finished eating" << endl;
+    //if(GetAsyncKeyState(VK_RETURN)==1){
+    //cout << "Philosopher " << id << " has finished eating" << endl;
+    //}
+    //eaters.eating[id]=0;
+
     llock.unlock();
     rlock.unlock();
   };
-
+  */
   //creates the chopsticks
   chopsticks sticks[count];
   
@@ -41,61 +78,52 @@ int main(){
   //shuffle(rngsus.begin(),rngsus.end(),default_random_engine(rngseed));
   while(true)
   { 
-    //string debug = "fuck you noob";
+    vector<int> eat,wait;
+
     shuffle(rngsus.begin(),rngsus.end(),default_random_engine(rngseed));
-    phil[rngsus[0]] = thread(eat, ref(sticks[rngsus[0]]),ref(sticks[rngsus[count-1]]),rngsus[0]+1);
-    
+    //phil[rngsus[0]] = thread(eat, ref(sticks[rngsus[0]]),ref(sticks[rngsus[count-1]]), ref(eaters),rngsus[0]+1);
+    phil[rngsus[0]] = thread(eatfunc, ref(sticks[rngsus[0]]),ref(sticks[rngsus[count-1]]), ref(eaters),rngsus[0]+1);
+
+
     for(int i=1;i<count;i++)
     {
       //cout<<"philosopher "<<rngsus[i]+1<<" is reading\n";
       //cout<<i<<endl;
-      phil[rngsus[i]] = thread(eat, ref(sticks[rngsus[i]]), ref(sticks[rngsus[i-1]]),rngsus[i]+1);
+      phil[rngsus[i]] = thread(eatfunc, ref(sticks[rngsus[i]]), ref(sticks[rngsus[i-1]]),ref(eaters),rngsus[i]+1);
       //cout<<"\n";
       
     }
     
-    
-
-    /*
-    shuffle(rngsus.begin(),rngsus.end(),default_random_engine(rngseed));
-    phil[rngsus[0]] = thread(eat, ref(sticks[rngsus[0]]),ref(sticks[rngsus[count-2]]),rngsus[0]+1);
-    
-    for(int i=1;i<count;i++)
-    {
-      //cout<<"philosopher "<<rngsus[i]+1<<" is reading\n";
-      phil[rngsus[i]] = thread(eat, ref(sticks[rngsus[i]]),ref(sticks[rngsus[i]-1]),rngsus[i]+1);
-      //cout<<"\n";
-    }
-    */
-    //int checksum = accumulate(sticks->ready,sticks->ready+5,checksum);
-    //if(checksum>=5){
-    
-    //}
-
+    if(GetAsyncKeyState(VK_RETURN)==1){
+        //int agg=0;
+        for(int i=0;i<5;i++){
+          //agg+=eaters.eating[i];
+          if (eaters.eating[i]==1){
+            eat.push_back(i+1);
+          }
+          else{
+            wait.push_back(i+1);
+          }
+        }
+        
+        cout<<"Eating: \n";
+        for(int i=0;i<eat.size();i++){
+          cout<<"Philosopher "<<eat[i]<<"\n";
+        }
+        cout<<"\nWaiting: \n";
+        for(int i=0;i<wait.size();i++){
+          cout<<"Philosopher "<<wait[i]<<"\n";
+        }
+      }
     
     for(auto &philosopher: phil) 
     {
         philosopher.join();
     }
+    eat.clear();
+    wait.clear();
     
-    /*
-    cout << "Philosopher " << (0+1) << " is reading.." << endl;
-    phil[0] = thread(eat, ref(sticks[0]), ref(sticks[count-1]), (0+1));
     
-    for(int i = 1; i < count; i-=-1) 
-    { 
-        
-        cout << "Philosopher " << (i+1) << " is reading.." << endl;
-        phil[i] = thread(eat, ref(sticks[i]), ref(sticks[i-1]), (i+1));
-          //cout<<endl;
-    }
-    */
-   /*
-    for(auto &ph: phil) 
-    {
-        ph.join();
-    }
-  */
     
   }
 

@@ -3,6 +3,9 @@
     "iostream": "cpp",
     "type_traits": "cpp",
     "thread": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "ostream": "cpp",
+    "chrono": "cpp",
+    "mutex": "cpp"
   }
 }
