@@ -24,7 +24,7 @@ int main(){
     
     cout << "Philosopher " << id << " is eating" << endl;
     
-    chrono::milliseconds timeout(1500);
+    chrono::milliseconds timeout(1000);
     this_thread::sleep_for(timeout);
     
     cout << "Philosopher " << id << " has finished eating" << endl;
@@ -38,9 +38,11 @@ int main(){
   while(true)
   { 
     shuffle(rngsus.begin(),rngsus.end(),default_random_engine(rngseed));
-    for(int i=0;i<count;i-=-1)
+    phil[rngsus[0]] = thread(eat, ref(sticks[rngsus[0]]),ref(sticks[count-1]),rngsus[0]+1);
+    
+    for(int i=1;i<count;i-=-1)
     {
-      cout<<"philosopher "<<rngsus[i]+1<<" is reading\n";
+      //cout<<"philosopher "<<rngsus[i]+1<<" is reading\n";
       phil[rngsus[i]] = thread(eat, ref(sticks[rngsus[i]]),ref(sticks[rngsus[i]-1]),rngsus[i]+1);
     }
     for(auto &philosopher: phil) 

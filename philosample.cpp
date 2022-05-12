@@ -38,12 +38,12 @@ int main()
     while (true)
     {
 	    //Philosophers Start reading
-	    cout << "Philosopher " << (0+1) << " is reading.." << endl;
+	    //cout << "Philosopher " << (0+1) << " is reading.." << endl;
 	    philosopher[0] = thread(eat, ref(chp[0]), ref(chp[no_of_philosophers-1]), (0+1));
 	    
 	    for(int i = 1; i < no_of_philosophers; ++i) 
 		{ 
-	        cout << "Philosopher " << (i+1) << " is reading.." << endl;
+	        //cout << "Philosopher " << (i+1) << " is reading.." << endl;
 	        philosopher[i] = thread(eat, ref(chp[i]), ref(chp[i-1]), (i+1));
             cout<<endl;
 	    }
