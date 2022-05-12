@@ -45,6 +45,7 @@ int main()
 		{ 
 	        cout << "Philosopher " << (i+1) << " is reading.." << endl;
 	        philosopher[i] = thread(eat, ref(chp[i]), ref(chp[i-1]), (i+1));
+            cout<<endl;
 	    }
 	    
 	    for(auto &ph: philosopher) 
