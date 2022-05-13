@@ -34,12 +34,13 @@ void eatfunc(chopsticks &left, chopsticks &right, check &eaters, int id)
   eaters.eating[id]=1;
   chrono::milliseconds timeout(100); 
   this_thread::sleep_for(timeout);
+  //eaters are not eating anymore
+  eaters.eating[id]=0;
   
   //unlocks the mutexes
   llock.unlock();
   rlock.unlock();
-  //eaters are not eating anymore
-  eaters.eating[id]=0;
+  
 }
 
 
