@@ -51,9 +51,11 @@ void showstats(check &eaters, vector<int> &eat, vector<int> &wait)
     if(GetAsyncKeyState(VK_RETURN)==1)
     {
         system("CLS");
-        for(int i=0;i<5;i++){
+        for(int i=0;i<5;i++)
+        {
           //checks which philosophers are eating or waiting
-          if (eaters.eating[i]==1){
+          if (eaters.eating[i]==1)
+          {
             eat.push_back(i+1);
           }
           else{
@@ -75,7 +77,8 @@ void showstats(check &eaters, vector<int> &eat, vector<int> &wait)
       }
 }
 
-int main(){
+int main()
+{
   const int count = 5;
   array<int,5> rngsus={0,1,2,3,4}; //to randomly order thread generation
   unsigned rngseed = chrono::system_clock::now().time_since_epoch().count();
